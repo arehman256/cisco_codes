@@ -1,0 +1,11 @@
+from pythonping import ping
+
+my_file = open("IP.txt", "r")
+data = my_file.read()
+data_into_list = data.split("\n")
+print(data_into_list)
+my_file.close()
+Ip_num = len(data_into_list)
+print(Ip_num)
+for Ip_num in data_into_list:
+  ping(Ip_num, verbose=True)
