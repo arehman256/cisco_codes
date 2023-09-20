@@ -1,0 +1,43 @@
+import netmiko
+from netmiko import ConnectHandler
+from pythonping import ping
+
+my_file = open("IP.txt", "r")
+data = my_file.read()
+data_into_list = data.split("\n")
+print(data_into_list)
+my_file.close()
+Ip_num = len(data_into_list)
+print(Ip_num)
+
+user = str(input("Enter the username: ")) 
+passcode = str(input("Enter the password: "))
+device = {
+        'device_type':'cisco_ios',
+        'ip': data_into_list[0] ,
+        'username': user ,
+        'password': passcode,
+        'port': '22' ,
+}
+net_connect = ConnectHandler(**device)
+output = net_connect.send_command('show clock')
+print(output)
+output = net_connect.send_command('show ip int bri | in Loop')
+print(output)
+net_connect.disconnect()
+
+user = str(input("Enter the username: ")) 
+passcode = str(input("Enter the password: "))
+device = {
+        'device_type':'cisco_ios',
+        'ip': data_into_list[1] ,
+        'username': user ,
+        'password': passcode,
+        'port': '22' ,
+}
+net_connect = ConnectHandler(**device)
+output = net_connect.send_command('show clock')
+print(output)
+output = net_connect.send_command('show ip int bri | in Loop')
+print(output)
+net_connect.disconnect()
