@@ -1,0 +1,13 @@
+import openpyxl 
+from pythonping import ping
+wb = openpyxl.load_workbook('IP List.xlsx')
+ws = wb.active
+values = [ws.cell(row=1,column=i).value for i in range(1,ws.max_column+1)]
+print(values)
+CU = (values.index("IP"))
+Row = (ws.max_row)
+Row = Row-2
+data=[ws.cell(row=i,column=(CU+1)).value for i in range(2,ws.max_column+Row)]
+print(data)
+for Row in data:
+ ping(Row, verbose=True)
