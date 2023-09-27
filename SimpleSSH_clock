@@ -1,0 +1,16 @@
+import netmiko
+from netmiko import ConnectHandler
+IP = str(input("Enter the Ip Address: "))
+user = str(input("Enter the username: "))
+passcode = str(input("Enter the pssword: "))
+device = {
+        'device_type':'cisco_ios',
+        'ip': IP ,
+        'username': user ,
+        'password': passcode,
+        'port': '22' ,
+}
+net_connect = ConnectHandler(**device)
+output = net_connect.send_command('show clock')
+print(output)
+net_connect.disconnect()
