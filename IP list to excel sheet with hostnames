@@ -1,0 +1,43 @@
+import netmiko
+from netmiko import ConnectHandler
+from pythonping import ping
+import getpass
+import xlsxwriter
+
+host_names = []
+my_file = open("IP.txt", "r")
+data = my_file.read()
+data_into_list = data.split("\n")
+print(data_into_list)
+Ip_list = data_into_list
+my_file.close()
+Ip_num = len(data_into_list)
+print("Total number of IPs in List", Ip_num)
+values = range(Ip_num)
+device = {}
+for i in values:
+ device[i] = {
+        'device_type':'cisco_ios',
+        'ip': data_into_list[i] ,
+        'username': 'cisco' ,
+        'password': 'cisco' ,
+        'port': '22' ,
+}
+values = range(Ip_num)
+for j in values:
+ ssh = device[j]
+ net_connect = ConnectHandler(**ssh)
+ output = net_connect.send_command('show run | in hostname')
+ host_names.append(output)
+ net_connect.disconnect()
+print(host_names)
+workbook = xlsxwriter.Workbook('Host IP.xlsx')
+worksheet = workbook.add_worksheet()
+worksheet.write('A1', 'IP Address')
+worksheet.write('B1', 'Hostname')
+for i in range(2, (Ip_num + 2)):
+    col_1 = ("A" + str(i))
+    col_2 = ("B" + str(i))
+    worksheet.write(col_1, Ip_list[i-2])
+    worksheet.write(col_2, host_names[i-2])       
+workbook.close()
