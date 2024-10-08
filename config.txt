@@ -1,0 +1,10 @@
+config t
+int loopback 700
+ip add 77.77.77.77 255.255.255.255
+exit
+router ospf 100
+area 0
+int loopback 700
+commit
+end
+show ip int bri | in Up
