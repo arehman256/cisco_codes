@@ -1,0 +1,17 @@
+import netmiko
+from netmiko import ConnectHandler
+device = {
+    'device_type': 'cisco_xr',
+    'ip': 'sandbox-iosxr-1.cisco.com',
+    'username': 'admin',
+    'password': 'C1sco12345',
+    'port': '22',
+}
+# Using a context manager to handle file operations
+with open("config.txt", "r") as my_file:
+    config = my_file.read().splitlines()
+net_connect = ConnectHandler(**device)
+# Using send_config_set to send multiple configuration commands
+output = net_connect.send_config_set(config)
+print(output)
+net_connect.disconnect()
