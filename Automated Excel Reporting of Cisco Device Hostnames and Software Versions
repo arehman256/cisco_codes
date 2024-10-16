@@ -1,0 +1,49 @@
+import xlsxwriter
+from netmiko import ConnectHandler
+
+with open("IP List.txt", "r") as my_file:
+    ip_list = my_file.read().splitlines()
+
+print(ip_list)
+ip_num = len(ip_list)
+device = {}
+
+workbook = xlsxwriter.Workbook('Host IP.xlsx')
+worksheet = workbook.add_worksheet()
+
+worksheet.write('A1', 'IP Address')
+worksheet.write('B1', 'Hostname')
+worksheet.write('C1', 'Version')
+
+row = 1
+for i in range(ip_num):
+    device = {
+        'device_type': 'cisco_ios',
+        'ip': ip_list[i],
+        'username': 'cisco',
+        'password': 'cisco',
+        'port': '22'
+    }
+
+    net_connect = ConnectHandler(**device)
+    hostname = net_connect.send_command('show run | include hostname')
+    version = net_connect.send_command('show version')
+
+    start_index = hostname.index("hostname") + 9
+    hostname = hostname[start_index:50]
+    
+    start_index = version.index("Software (")
+    end_index = version.index(", R")
+    version = version[start_index:end_index]
+
+    print(hostname)
+    print(version)
+
+    worksheet.write(row, 0, ip_list[i])
+    worksheet.write(row, 1, hostname.strip())
+    worksheet.write(row, 2, version.strip())
+    row += 1
+
+    net_connect.disconnect()
+
+workbook.close()
